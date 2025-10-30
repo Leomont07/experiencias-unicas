@@ -19,15 +19,12 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install K6 (official repository)
+      - name: Install K6 (binary download)
         run: |
-          sudo apt update
-          sudo apt install -y ca-certificates curl gnupg
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt update
-          sudo apt install -y k6
+          curl -L https://github.com/grafana/k6/releases/latest/download/k6-v0.51.0-linux-amd64.tar.gz -o k6.tar.gz
+          tar -xzf k6.tar.gz
+          sudo mv k6-v*/k6 /usr/local/bin/
+          k6 version
 
       - name: Run K6 load test
         env:
