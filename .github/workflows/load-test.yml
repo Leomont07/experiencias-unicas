@@ -24,8 +24,14 @@ jobs:
         run: npm install
 
       - name: Install K6
-        # ✅ CAMBIO CLAVE: Usar la acción oficial de K6
-        uses: grafana/k6-action@v0.2.1 
+        run: |
+          curl -s https://api.github.com/repos/grafana/k6/releases/latest \
+          | grep "browser_download_url.*linux-amd64.tar.gz" \
+          | cut -d '"' -f 4 \
+          | wget -qi -
+          tar -xzf k6-v*-linux-amd64.tar.gz
+          sudo mv k6-v*/k6 /usr/local/bin/
+          k6 version
 
       - name: Run K6 load test
         env:
@@ -33,5 +39,4 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           echo "Running K6 load test..."
-          # K6 ya estará disponible en el PATH
           k6 run test/script_k6.js
