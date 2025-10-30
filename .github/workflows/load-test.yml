@@ -1,5 +1,6 @@
 name: K6 Load Test
 
+# Se ejecuta en push al main o manualmente
 on:
   push:
     branches:
@@ -11,15 +12,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Instalar Node.js para tu proyecto React
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install k6
+      # 3️⃣ Instalar dependencias de React (opcional si quieres levantar frontend)
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Instalar K6 desde GitHub Releases (linux-amd64)
+      - name: Install K6
         run: |
           curl -s https://api.github.com/repos/grafana/k6/releases/latest \
           | grep "browser_download_url.*linux-amd64.tar.gz" \
@@ -29,10 +37,12 @@ jobs:
           sudo mv k6-v*/k6 /usr/local/bin/
           k6 version
 
+      # 5️⃣ Ejecutar la prueba de carga
       - name: Run K6 load test
         env:
+          # Variables de entorno si tu backend usa Supabase
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          echo "Running K6 test..."
-          k6 run tests/load_test.js
+          echo "Running K6 load test..."
+          k6 run test/script_k6.js
