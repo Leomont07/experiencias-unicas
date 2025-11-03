@@ -1,7 +1,16 @@
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Navbar() {
+  const { user } = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/')
+    window.location.reload()
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -15,14 +24,32 @@ export default function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/services">Servicios</Link>
             </li>
+            {/* 🔐 Solo visible si es admin */}
+            {user?.rol === 'admin' && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">Panel Admin</Link>
+              </li>
+            )}
           </ul>
+
           <ul className="navbar-nav ms-auto align-items-center">
+            {!user ? (
+              <>
                 <li className="nav-item me-2">
                   <Link className="btn btn-outline-primary" to="/login">Iniciar sesión</Link>
                 </li>
                 <li className="nav-item">
                   <Link className="btn btn-primary" to="/register">Registrarse</Link>
                 </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item me-2">
+                  <span className="me-3">Hola, {user.nombre}</span>
+                  <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>Cerrar sesión</button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

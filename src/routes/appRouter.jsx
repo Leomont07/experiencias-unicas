@@ -9,6 +9,8 @@ import Booking from '../pages/Booking'
 import HostDashboard from '../pages/HostDashboard'
 import CreateService from '../pages/CreateService'
 import BookingDetail from '../pages/BookingDetail'
+import AdminDashboard from '../pages/AdminDashboard'
+import AdminRoute from './AdminRoute'
 
 export default function AppRouter() {
   return (
@@ -22,6 +24,17 @@ export default function AppRouter() {
       <Route path="/host" element={<HostDashboard />} />
       <Route path="/host/create" element={<CreateService />} />
       <Route path="/host/bookings/:id" element={<BookingDetail />} />
+
+      {/* 🚀 NUEVO: Panel de Administración protegido */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        }
+      />
+
       <Route path="*" element={<div>404 - Not Found</div>} />
     </Routes>
   )
