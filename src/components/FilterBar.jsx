@@ -11,7 +11,7 @@ export default function FilterBar({ filters, onChange, onApply }) {
           <select className="form-select" value={filters.tipo || ''} onChange={(e)=>onChange({...filters, tipo: e.target.value})}>
             <option value="">Todos los tipos</option>
             <option value="hospedaje">Hospedaje</option>
-            <option value="tour">Tour</option>
+            <option value="alimentos">Alimentos</option>
             <option value="experiencia">Experiencia</option>
           </select>
         </div>

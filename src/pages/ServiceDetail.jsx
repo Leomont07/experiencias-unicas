@@ -1,31 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ImageCarousel from '../components/ImageCarousel'
+import { apiRequest } from '../api/api'
 
-const MOCK = {
-  id: '1',
-  nombre: 'Tour Peña de Bernal',
-  tipo: 'tour',
-  precio: 300,
-  descripcion: 'Recorrido guiado por Peña de Bernal con degustación local',
-  images: ['/placeholder.jpg']
-}
-
-export default function ServiceDetail(){
+export default function ServiceDetail() {
   const { id } = useParams()
   const [service, setService] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    setService(MOCK)
+    const fetchService = async () => {
+      try {
+        setLoading(true)
+        const data = await apiRequest(`/service/getById/${id}`, 'GET')
+        setService(data.servicio)
+      } catch (err) {
+        console.error('Error al obtener servicio:', err)
+        setError('No se pudo cargar el servicio.')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchService()
   }, [id])
 
-  if (!service) return <div>Cargando...</div>
+  if (loading) return <p>Cargando servicio...</p>
+  if (error) return <p className="text-danger">{error}</p>
+  if (!service) return <p>No se encontró el servicio</p>
 
   return (
     <div className="row g-4">
       <div className="col-md-7">
         <div className="card p-3">
-          <ImageCarousel images={service.images} />
+          <ImageCarousel images={service.images || ['/placeholder.jpg']} />
           <div className="mt-3">
             <h3>{service.nombre}</h3>
             <p className="text-muted">{service.tipo} · ${service.precio}</p>
@@ -33,6 +41,7 @@ export default function ServiceDetail(){
           </div>
         </div>
       </div>
+
       <div className="col-md-5">
         <div className="card p-3">
           <h5>Reservar</h5>
