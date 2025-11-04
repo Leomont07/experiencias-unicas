@@ -1,0 +1,15 @@
+FROM node:20
+
+WORKDIR /app
+
+# Copiar solo los archivos del backend
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Exponer el puerto que definimos en docker-compose
+EXPOSE 4000
+
+# CMD: usar las variables de entorno ya definidas en docker-compose
+CMD ["node", "index.js"]
