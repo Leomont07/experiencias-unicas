@@ -19,6 +19,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           # port: ${{ secrets.SSH_PORT }} # opcional si no es 22
           script: |
-            cd /path/to/your/app # Cambia a la ruta de tu proyecto en el VPS
+            cd /home/deployer/experiencias-unicas
             docker-compose pull
             docker-compose up -d
