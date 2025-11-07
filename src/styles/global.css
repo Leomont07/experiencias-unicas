@@ -1,8 +1,8 @@
 :root{
-  --primary: #2196F3;
-  --accent: #4CAF50;
-  --muted: #f5f7fa;
-  --text: #333;
+  --primary: #004AAD;
+  --accent: #FFC107;
+  --muted: #FFFFFF;
+  --text: #333333;
   --card-shadow: 0 6px 18px rgba(34,41,47,0.06);
 }
 

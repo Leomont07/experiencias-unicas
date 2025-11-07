@@ -17,9 +17,9 @@ export default function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
       <div className="container">
         {user && user.tipo === 'anfitrion' ? (
-          <Link className="navbar-brand" to="/host">Arroyo Seco</Link>
+          <Link className="navbar-brand" to="/host">Experiencias Únicas</Link>
         ) : (
-          <Link className="navbar-brand" to="/">Arroyo Seco</Link>
+          <Link className="navbar-brand" to="/">Experiencias Únicas</Link>
         )}
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
           <span className="navbar-toggler-icon"></span>
