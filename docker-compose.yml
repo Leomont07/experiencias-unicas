@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+    container_name: front_app
+    ports:
+      - "80:80"
+    depends_on:
+      - back
+
+  back:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.back
+    container_name: back_app
+    ports:
+      - "4000:4000"  
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - SUPABASE_URL=https://tyditglanavmupucjooo.supabase.co
+      - SUPABASE_KEY=sb_publishable_jbOYxa9fnQwrOJI2ptCutA_Fa0Up0Rl
+      - JWT_SECRET=supersecreto123
+      - JWT_EXPIRES_IN=1h
