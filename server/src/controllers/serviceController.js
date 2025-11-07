@@ -3,16 +3,29 @@ import { supabase } from '../index.js'
 
 export const add = async (req, res) => {
   try {
-    const { nombre, descripcion, precio, idUsuario, tipo, estatus } = req.body
+    const { nombre, descripcion, precio, idUsuario, tipo, estatus,
+            subtipo, numHabitaciones, numCuartos, numPisos,
+            cantidad,duracionHoras
+          } = req.body
 
     if (!nombre || !descripcion || !precio || !tipo || !estatus) {
-      return res.status(400).json({ message: 'Todos los campos son obligatorios'})
+      return res.status(400).json({ message: 'Los campos nombre, descripcion, precio, tipo y estatus son obligatorios'})
     }
 
-    // Insertar servicio nuevo
+    const serviceData = { 
+      nombre, descripcion, precio, tipo, idUsuario, estatus,
+      subtipo, numHabitaciones, numCuartos, numPisos,
+      cantidad,
+      duracionHoras
+    }
+    
+    Object.keys(serviceData).forEach(key => 
+      (serviceData[key] === null || serviceData[key] === undefined || serviceData[key] === '') && delete serviceData[key]
+    );
+
     const { data, error } = await supabase
       .from('service')
-      .insert([{ nombre, descripcion, precio, tipo, idUsuario, estatus }])
+      .insert([serviceData])
       .select()
       .single()
 
@@ -28,15 +41,32 @@ export const add = async (req, res) => {
 export const edit = async (req, res) => {
     try {
         const { id } = req.params
-        const { nombre, descripcion, precio, tipo  } = req.body
+        const { 
+            nombre, descripcion, precio, tipo,
+            subtipo, numHabitaciones, numCuartos, numPisos,
+            cantidad,
+            duracionHoras
+        } = req.body
+
 
         if (!nombre || !descripcion || !precio || !tipo) {
-            return res.status(400).json({ message: 'Todos los campos son obligatorios' })
+            return res.status(400).json({ message: 'Los campos nombre, descripcion, precio y tipo son obligatorios' })
         }
-        // Actualizar servicio
+
+        const serviceData = { 
+            nombre, descripcion, precio, tipo,
+            subtipo, numHabitaciones, numCuartos, numPisos,
+            cantidad,
+            duracionHoras
+        }
+        
+        Object.keys(serviceData).forEach(key => 
+          (serviceData[key] === null || serviceData[key] === undefined || serviceData[key] === '') && delete serviceData[key]
+        );
+
         const { data, error } = await supabase
             .from('service')
-            .update({ nombre, descripcion, precio, tipo })
+            .update(serviceData)
             .eq('id', id)
             .select()
             .single()

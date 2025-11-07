@@ -78,6 +78,63 @@ export default function HostDashboard() {
     }
   }
 
+  const handleModalDetallesChange = (e) => {
+    setSelectedService({ ...selectedService, [e.target.name]: e.target.value })
+  }
+
+  const ModalHospedajeFields = ({ service, onChange }) => (
+    <>
+      <div className="mb-3">
+          <label className="form-label">Subtipo de Hospedaje</label>
+          <select
+              className="form-select"
+              name="subtipo"
+              value={service.subtipo || ''}
+              onChange={onChange}
+          >
+              <option disabled value="">Seleccione el tipo de lugar</option>
+              <option value="hotel">Hotel</option>
+              <option value="casa">Casa</option>
+              <option value="departamento">Departamento</option>
+          </select>
+      </div>
+        
+      {service.subtipo === 'hotel' && (
+        <div className="mb-3">
+            <label className="form-label">Número de Habitaciones</label>
+            <input type="number" name="numHabitaciones" className="form-control" value={service.numHabitaciones || 0} onChange={onChange} min="1" />
+        </div>
+      )}
+        
+      {(service.subtipo === 'casa' || service.subtipo === 'departamento') && (
+        <>
+            <div className="mb-3">
+                <label className="form-label">Número de Cuartos</label>
+                <input type="number" name="numCuartos" className="form-control" value={service.numCuartos || 0} onChange={onChange} min="1" />
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Número de Pisos</label>
+                <input type="number" name="numPisos" className="form-control" value={service.numPisos || 0} onChange={onChange} min="1" />
+            </div>
+        </>
+      )}
+    </>
+  )
+
+  const ModalAlimentosFields = ({ service, onChange }) => (
+    <div className="mb-3">
+        <label className="form-label">Cantidad (de productos/raciones)</label>
+        <input type="number" name="cantidad" className="form-control" value={service.cantidad || 0} onChange={onChange} min="0" />
+    </div>
+  )
+
+  const ModalExperienciaFields = ({ service, onChange }) => (
+      <div className="mb-3">
+          <label className="form-label">Duración (en horas)</label>
+          <input type="number" name="duracionHoras" className="form-control" value={service.duracionHoras || 0} onChange={onChange} step="0.5" min="0.5" />
+      </div>
+  )
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -141,7 +198,7 @@ export default function HostDashboard() {
         </>
       )}
 
-      {/* 🪟 MODAL DE EDICIÓN */}
+
       {showModal && selectedService && (
         <div className="modal fade show" style={{ display: 'block', background: 'rgba(0,0,0,0.6)' }}>
           <div className="modal-dialog">
@@ -155,14 +212,26 @@ export default function HostDashboard() {
                   <label className="form-label">Nombre</label>
                   <input type="text" name="nombre" className="form-control" value={selectedService.nombre} onChange={handleModalChange} />
                 </div>
+                
                 <div className="mb-3">
                   <label className="form-label">Tipo</label>
                   <select name="tipo" className="form-select" value={selectedService.tipo} onChange={handleModalChange}>
-                    <option value="tour">Tour</option>
+                    <option value="alimentos">Alimentos</option>
                     <option value="hospedaje">Hospedaje</option>
                     <option value="experiencia">Experiencia</option>
                   </select>
                 </div>
+                
+                {selectedService.tipo === 'hospedaje' && (
+                    <ModalHospedajeFields service={selectedService} onChange={handleModalDetallesChange} />
+                )}
+                {selectedService.tipo === 'alimentos' && (
+                    <ModalAlimentosFields service={selectedService} onChange={handleModalDetallesChange} />
+                )}
+                {selectedService.tipo === 'experiencia' && (
+                    <ModalExperienciaFields service={selectedService} onChange={handleModalDetallesChange} />
+                )}
+
                 <div className="mb-3">
                   <label className="form-label">Precio</label>
                   <input type="number" name="precio" className="form-control" value={selectedService.precio} onChange={handleModalChange} />

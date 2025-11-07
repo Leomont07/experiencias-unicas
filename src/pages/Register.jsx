@@ -28,8 +28,12 @@ export default function Register() {
 
       if (!res.ok) throw new Error(data.message || 'Error al registrar')
 
-      // Guardar token y redirigir
       login({ token: data.token, user: data.user })
+
+      if (data.user.tipo === 'anfitrion') {
+        navigate('/host')
+        return
+      }
 
       navigate('/') 
     } catch (err) {

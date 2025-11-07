@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import InputField from '../components/InputField'
 import { AuthContext } from '../context/AuthContext'
@@ -31,11 +31,39 @@ export default function Login() {
       // Guardar token en localStorage
       login({ token: data.token, user: data.user })
 
+      if (data.user.tipo === 'anfitrion') {
+        navigate('/host')
+        return
+      }
+      
       navigate('/')
     } catch (err) {
       setError(err.message)
     }
   }
+
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user')
+    console.log(userString)
+
+    if (userString) {
+      try {
+        const user = JSON.parse(userString)
+        
+        if (user && user.tipo) {
+          if (user.tipo === 'anfitrion') {
+            navigate('/host')
+          } else {
+            navigate('/')
+          }
+        }
+      } catch (e) {
+        console.error("Error al parsear usuario desde localStorage:", e)
+      }
+    }
+  }, [navigate])
+
 
   return (
     <div className="row justify-content-center">

@@ -16,16 +16,27 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
       <div className="container">
-        <Link className="navbar-brand" to="/">Arroyo Seco</Link>
+        {user && user.tipo === 'anfitrion' ? (
+          <Link className="navbar-brand" to="/host">Arroyo Seco</Link>
+        ) : (
+          <Link className="navbar-brand" to="/">Arroyo Seco</Link>
+        )}
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="nav">
           <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/services">Servicios</Link>
-            </li>
-            {/* 🔐 Solo visible si es admin */}
+            {user && user.tipo === 'turista' && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/services">Servicios</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/my-bookings">Mis Reservas</Link>
+                </li>
+              </>
+            )}
+            {/* Solo visible si es admin */}
             {user?.tipo === 'admin' && (
               <li className="nav-item">
                 <Link className="nav-link" to="/admin">Panel Admin</Link>

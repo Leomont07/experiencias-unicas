@@ -13,6 +13,7 @@ import AdminDashboard from '../pages/AdminDashboard'
 import ProtectedRoute from './protectedRoute' 
 import PoliticaPrivacidad from '../pages/PoliticaProvacidad'
 import TerminosCondiciones from '../pages/TerminosCondiciones'
+import BookingList from '../pages/BookingList'
 
 export default function AppRouter() {
   
@@ -40,6 +41,14 @@ export default function AppRouter() {
         element={
           <ProtectedRoute allowedTypes={TOURIST}>
             <Booking />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-bookings" 
+        element={
+          <ProtectedRoute allowedTypes={TOURIST}>
+            <BookingList />
           </ProtectedRoute>
         } 
       />

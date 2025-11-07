@@ -13,11 +13,36 @@ export default function CreateService() {
     precio: 0,
     descripcion: ''
   })
+
+  const [detalles, setDetalles] = useState({
+    hospedaje: {
+      subtipo: '',
+      numHabitaciones: 0,
+      numCuartos: 0,
+      numPisos: 0,
+    },
+    alimentos: {
+      cantidad: 0,
+    },
+    experiencia: {
+      duracionHoras: 0,
+    }
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const onChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value })
+
+  const onChangeDetalle = (tipoServicio, e) => {
+    setDetalles({
+      ...detalles,
+      [tipoServicio]: {
+        ...detalles[tipoServicio],
+        [e.target.name]: e.target.value
+      }
+    })
+  }
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -25,13 +50,20 @@ export default function CreateService() {
     setError(null)
 
     try {
+      // 🆕 Se agrega el objeto de detalles relevante al payload
+      const detallesAdicionales = form.tipo === 'hospedaje' ? detalles.hospedaje
+        : form.tipo === 'alimentos' ? detalles.alimentos
+          : form.tipo === 'experiencia' ? detalles.experiencia
+            : {}
+
       const body = {
         nombre: form.nombre,
         descripcion: form.descripcion,
         tipo: form.tipo,
         estatus: 1,
         precio: parseFloat(form.precio),
-        idUsuario: user?.id || JSON.parse(localStorage.getItem('user')).id
+        idUsuario: user?.id || JSON.parse(localStorage.getItem('user')).id,
+        ...detallesAdicionales 
       }
 
       await apiRequest('/service/add', 'POST', body)
@@ -44,6 +76,84 @@ export default function CreateService() {
       setLoading(false)
     }
   }
+  
+  const HospedajeFields = () => (
+    <>
+      <div className="mb-3">
+        <label className="form-label">Subtipo de Hospedaje</label>
+        <select
+          className="form-select"
+          name="subtipo"
+          value={detalles.hospedaje.subtipo}
+          onChange={(e) => onChangeDetalle('hospedaje', e)}
+          required
+        >
+          <option disabled value="">Seleccione el tipo de lugar</option>
+          <option value="hotel">Hotel</option>
+          <option value="casa">Casa</option>
+          <option value="departamento">Departamento</option>
+        </select>
+      </div>
+      
+      {detalles.hospedaje.subtipo === 'hotel' && (
+        <InputField 
+          label="Número de Habitaciones" 
+          name="numHabitaciones" 
+          type="number" 
+          value={detalles.hospedaje.numHabitaciones} 
+          onChange={(e) => onChangeDetalle('hospedaje', e)} 
+          min="1"
+        />
+      )}
+      
+      {(detalles.hospedaje.subtipo === 'casa' || detalles.hospedaje.subtipo === 'departamento') && (
+        <>
+          <InputField 
+            label="Número de Cuartos" 
+            name="numCuartos" 
+            type="number" 
+            value={detalles.hospedaje.numCuartos} 
+            onChange={(e) => onChangeDetalle('hospedaje', e)} 
+            min="1"
+          />
+          <InputField 
+            label="Número de Pisos" 
+            name="numPisos" 
+            type="number" 
+            value={detalles.hospedaje.numPisos} 
+            onChange={(e) => onChangeDetalle('hospedaje', e)} 
+            min="1"
+          />
+        </>
+      )}
+    </>
+  )
+
+  const AlimentosFields = () => (
+    <>
+      <InputField 
+        label="Cantidad" 
+        name="cantidad" 
+        type='number'
+        value={detalles.alimentos.cantidad} 
+        onChange={(e) => onChangeDetalle('alimentos', e)}
+      />
+    </>
+  )
+
+  const ExperienciaFields = () => (
+    <>
+      <InputField 
+        label="Duración (en horas)" 
+        name="duracionHoras" 
+        type="number" 
+        value={detalles.experiencia.duracionHoras} 
+        onChange={(e) => onChangeDetalle('experiencia', e)} 
+        step="0.5"
+        min="0.5"
+      />
+    </>
+  )
 
   return (
     <div className="row justify-content-center">
@@ -55,19 +165,23 @@ export default function CreateService() {
 
             <div className="mb-3">
               <label className="form-label">Tipo</label>
-              <select className="form-select" name="tipo" value={form.tipo} onChange={onChange}>
+              <select className="form-select" name="tipo" value={form.tipo} onChange={onChange} required>
                 <option disabled value="">Seleccione una opción</option>
                 <option value="alimentos">Alimentos</option>
                 <option value="hospedaje">Hospedaje</option>
                 <option value="experiencia">Experiencia</option>
               </select>
             </div>
+            
+            {form.tipo === 'hospedaje' && <HospedajeFields />}
+            {form.tipo === 'alimentos' && <AlimentosFields />}
+            {form.tipo === 'experiencia' && <ExperienciaFields />}
 
-            <InputField label="Precio" name="precio" type="number" value={form.precio} onChange={onChange} />
+            <InputField label="Precio" name="precio" type="number" value={form.precio} onChange={onChange} min="0" />
 
             <div className="mb-3">
               <label className="form-label">Descripción</label>
-              <textarea className="form-control" name="descripcion" value={form.descripcion} onChange={onChange} rows="4"></textarea>
+              <textarea className="form-control" name="descripcion" value={form.descripcion} onChange={onChange} rows="4" required></textarea>
             </div>
 
             {error && <div className="alert alert-danger">{error}</div>}

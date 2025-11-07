@@ -2,41 +2,67 @@ import e from 'express'
 import { supabase } from '../index.js'
 
 export const add = async (req, res) => {
-  try {
-    const { idUsuario, idService, estatus, cantidad, comentarios, fecha } = req.body
+    try {
+        const { 
+            idUsuario, idService, estatus, comentarios, 
+            cantidad,
+            fechaInicio, 
+            fechaFin,
+            numNoches
+        } = req.body
 
-    if (!idUsuario || !idService || !estatus || !cantidad || !fecha) {
-      return res.status(400).json({ message: 'Todos los campos son obligatorios'})
+        if (!idUsuario || !idService || !estatus || !cantidad || !fechaInicio) {
+            return res.status(400).json({ message: 'Todos los campos base son obligatorios (Usuario, Servicio, Estado, Cantidad, Fecha de inicio)'})
+        }
+
+        const { data: servicio, error: serviceError } = await supabase
+            .from('service')
+            .select('precio, tipo') 
+            .eq('id', idService)
+            .single()
+
+        if (serviceError || !servicio) {
+            throw new Error('No se pudo obtener el precio y tipo del servicio')
+        }
+
+        let total = 0;
+        
+        if (servicio.tipo === 'hospedaje' && numNoches) {
+            total = servicio.precio * numNoches 
+        } else {
+            total = servicio.precio * cantidad 
+        }
+
+        const bookingData = { 
+            idUsuario, 
+            idService, 
+            estatus, 
+            comentarios, 
+            cantidad,
+            fechaInicio, 
+            total,
+            fechaFin,
+            numNoches
+        }
+
+        Object.keys(bookingData).forEach(key => 
+          (bookingData[key] === null || bookingData[key] === undefined || bookingData[key] === '') && delete bookingData[key]
+        );
+        
+        const { data, error } = await supabase
+            .from('booking')
+            .insert([bookingData])
+            .select()
+            .single()
+
+        if (error) throw error
+
+        res.status(201).json({ booking: data })
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
     }
-
-    const { data: servicio, error: serviceError } = await supabase
-      .from('service')
-      .select('precio')
-      .eq('id', idService)
-      .single()
-
-    if (serviceError || !servicio) {
-      throw new Error('No se pudo obtener el precio del servicio')
-    }
-
-    const total = servicio.precio * (cantidad || 1)
-
-    // Insertar reserva nueva
-    const { data, error } = await supabase
-      .from('booking')
-      .insert([{ idUsuario, idService, estatus, cantidad, comentarios, total, fecha }])
-      .select()
-      .single()
-
-    if (error) throw error
-
-    res.status(201).json({ booking: data })
-
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
 }
-
 export const remove = async (req, res) => {
     const { id } = req.params
 
@@ -76,15 +102,17 @@ export const getBookById = async (req, res) => {
 export const getBookingsByUserId = async (req, res) => {
     try {
         const { idUsuario } = req.params
+        
         const { data, error } = await supabase
             .from('booking')
-            .select('*')
+            .select('*, service(nombre, tipo)') 
             .eq('idUsuario', idUsuario)
-            .eq('estatus', 1)
+            .eq('estatus', 'Confirmada')
+            .order('fechaInicio', { ascending: false })
             
         if (error) throw error
 
-        res.status(200).json({ servicios: data })
+        res.status(200).json({ reservas: data }) 
 
     } catch (error) {
         res.status(500).json({ message: error.message })

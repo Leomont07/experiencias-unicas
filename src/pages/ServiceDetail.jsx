@@ -3,54 +3,101 @@ import { useParams, Link } from 'react-router-dom'
 import ImageCarousel from '../components/ImageCarousel'
 import { apiRequest } from '../api/api'
 
-export default function ServiceDetail() {
-  const { id } = useParams()
-  const [service, setService] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const ServiceSpecificDetails = ({ service }) => {
+    if (!service) return null
 
-  useEffect(() => {
-    const fetchService = async () => {
-      try {
-        setLoading(true)
-        const data = await apiRequest(`/service/getById/${id}`, 'GET')
-        setService(data.servicio)
-      } catch (err) {
-        console.error('Error al obtener servicio:', err)
-        setError('No se pudo cargar el servicio.')
-      } finally {
-        setLoading(false)
-      }
+    switch (service.tipo) {
+        case 'hospedaje':
+            return (
+                <div className="mb-4">
+                    <h5>Detalles de Hospedaje</h5>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item"><strong>Tipo:</strong> {service.subtipo}</li>
+                        {service.subtipo === 'hotel' && service.numHabitaciones > 0 && (
+                            <li className="list-group-item"><strong>Habitaciones:</strong> {service.numHabitaciones}</li>
+                        )}
+                        {(service.subtipo === 'casa' || service.subtipo === 'departamento') && service.numCuartos > 0 && (
+                            <li className="list-group-item"><strong>Cuartos:</strong> {service.numCuartos}</li>
+                        )}
+                        {service.numPisos > 0 && (
+                            <li className="list-group-item"><strong>Pisos:</strong> {service.numPisos}</li>
+                        )}
+                    </ul>
+                </div>
+            )
+        case 'alimentos':
+            return (
+                <div className="mb-4">
+                    <h5>Detalles de Alimentos</h5>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item"><strong>Cantidad (porción/producto):</strong> {service.cantidad}</li>
+                    </ul>
+                </div>
+            )
+        case 'experiencia':
+            return (
+                <div className="mb-4">
+                    <h5>Detalles de Experiencia</h5>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item"><strong>Duración:</strong> {service.duracionHoras} hora(s)</li>
+                    </ul>
+                </div>
+            )
+        default:
+            return null
     }
-    fetchService()
-  }, [id])
+}
 
-  if (loading) return <p>Cargando servicio...</p>
-  if (error) return <p className="text-danger">{error}</p>
-  if (!service) return <p>No se encontró el servicio</p>
+export default function ServiceDetail() {
+    const { id } = useParams()
+    const [service, setService] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-  return (
-    <div className="row g-4">
-      <div className="col-md-7">
-        <div className="card p-3">
-          <ImageCarousel images={service.images || ['/placeholder.jpg']} />
-          <div className="mt-3">
-            <h3>{service.nombre}</h3>
-            <p className="text-muted">{service.tipo} · ${service.precio}</p>
-            <p>{service.descripcion}</p>
-          </div>
+    useEffect(() => {
+        const fetchService = async () => {
+            try {
+                setLoading(true)
+                const data = await apiRequest(`/service/getById/${id}`, 'GET')
+                setService(data.servicio)
+            } catch (err) {
+                console.error('Error al obtener servicio:', err)
+                setError('No se pudo cargar el servicio.')
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchService()
+    }, [id])
+
+    if (loading) return <p>Cargando servicio...</p>
+    if (error) return <p className="text-danger">{error}</p>
+    if (!service) return <p>No se encontró el servicio</p>
+
+    return (
+        <div className="row g-4">
+            <div className="col-md-7">
+                <div className="card p-3">
+                    <ImageCarousel images={service.images || ['/placeholder.jpg']} />
+                    <div className="mt-3">
+                        <h3>{service.nombre}</h3>
+                        <p className="text-muted">Tipo de servicio: {service.tipo}</p>
+                        <ServiceSpecificDetails service={service} />
+                        <h5>Descripción</h5>
+                        <p>{service.descripcion}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="col-md-5">
+                <div className="card p-3">
+                    <h5>Reservar</h5>
+                    <p><strong>Precio:</strong> ${service.precio}</p>
+                    <div className="d-grid">
+                        <Link to={`/booking/${service.id}`} className="btn btn-primary">Iniciar reserva</Link>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div className="col-md-5">
-        <div className="card p-3">
-          <h5>Reservar</h5>
-          <p><strong>Precio:</strong> ${service.precio}</p>
-          <div className="d-grid">
-            <Link to={`/booking/${service.id}`} className="btn btn-primary">Iniciar reserva</Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+    )
 }
