@@ -8,6 +8,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     navigate('/')
     window.location.reload()
   }
@@ -25,7 +26,7 @@ export default function Navbar() {
               <Link className="nav-link" to="/services">Servicios</Link>
             </li>
             {/* 🔐 Solo visible si es admin */}
-            {user?.rol === 'admin' && (
+            {user?.tipo === 'admin' && (
               <li className="nav-item">
                 <Link className="nav-link" to="/admin">Panel Admin</Link>
               </li>

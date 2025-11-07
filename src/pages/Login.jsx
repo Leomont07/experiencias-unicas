@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import InputField from '../components/InputField'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useContext(AuthContext)
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState(null)
 
@@ -27,10 +29,9 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message || 'Error al iniciar sesión')
 
       // Guardar token en localStorage
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      login({ token: data.token, user: data.user })
 
-      navigate('/') // Redirige a la página principal o dashboard
+      navigate('/')
     } catch (err) {
       setError(err.message)
     }

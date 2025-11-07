@@ -4,9 +4,9 @@ import { generateToken } from '../utils/generateToken.js'
 
 export const register = async (req, res) => {
   try {
-    const { nombre, email, password } = req.body
+    const { nombre, email, password, tipo } = req.body
 
-    if (!nombre || !email || !password) {
+    if (!nombre || !email || !password || !tipo) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios' })
     }
 
@@ -27,7 +27,7 @@ export const register = async (req, res) => {
     // Insertar usuario nuevo
     const { data, error } = await supabase
       .from('users')
-      .insert([{ nombre, email, password: hashedPassword }])
+      .insert([{ nombre, email, password: hashedPassword, tipo }])
       .select()
       .single()
 

@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InputField from '../components/InputField'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Register() {
   const navigate = useNavigate()
-  const [formData, setFormData] = useState({ nombre: '', email: '', password: '' })
+  const { login } = useContext(AuthContext)
+  const [formData, setFormData] = useState({ nombre: '', email: '', password: '', tipo: 'turista' })
   const [error, setError] = useState(null)
 
   const handleChange = (e) => {
@@ -19,7 +21,7 @@ export default function Register() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // 'tipo' se incluye aquí automáticamente
       })
 
       const data = await res.json()
@@ -27,10 +29,9 @@ export default function Register() {
       if (!res.ok) throw new Error(data.message || 'Error al registrar')
 
       // Guardar token y redirigir
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      login({ token: data.token, user: data.user })
 
-      navigate('/') // Redirige al home o dashboard
+      navigate('/') 
     } catch (err) {
       setError(err.message)
     }
@@ -45,6 +46,21 @@ export default function Register() {
             <InputField label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
             <InputField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
             <InputField label="Contraseña" name="password" type="password" value={formData.password} onChange={handleChange} />
+
+            <div className="mb-3">
+              <label htmlFor="tipo" className="form-label">Tipo de Usuario</label>
+              <select
+                id="tipo"
+                name="tipo"
+                className="form-select"
+                value={formData.tipo}
+                onChange={handleChange}
+              >
+                <option value="turista">Turista</option>
+                <option value="anfitrion">Anfitrión</option>
+              </select>
+            </div>
+
             <div className="d-grid">
               <button className="btn btn-primary" type="submit">Crear cuenta</button>
             </div>
