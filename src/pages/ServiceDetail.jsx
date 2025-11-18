@@ -78,7 +78,7 @@ export default function ServiceDetail() {
         <div className="row g-4">
             <div className="col-md-7">
                 <div className="card p-3">
-                    <ImageCarousel images={service.images || ['/placeholder.jpg']} />
+                    <ImageCarousel images={service.images || ['/default.jpg']} />
                     <div className="mt-3">
                         <h3>{service.nombre}</h3>
                         <p className="text-muted">Tipo de servicio: {service.tipo}</p>

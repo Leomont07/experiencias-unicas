@@ -32,7 +32,7 @@ export default function ServiceCard({ service }) {
     return (
         <div className="card p-0">
             <div style={{height:180, overflow:'hidden', borderTopLeftRadius:12, borderTopRightRadius:12}}>
-                <img src={service.image || '/placeholder.jpg'} alt={service.nombre} style={{width:'100%', objectFit:'cover'}} />
+                <img src={service.image || '/default.jpg'} alt={service.nombre} style={{width:'100%', objectFit:'cover'}} />
             </div>
             <div className="card-body">
                 <h5 className="card-title">{service.nombre}</h5>
