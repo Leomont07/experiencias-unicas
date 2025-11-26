@@ -18,17 +18,16 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)", 
+      "src": "/api/(.*)",
       "dest": "server/src/index.js"
     },
     {
-      "src": "/[^.]+",
-      "dest": "/",
-      "check": true
+      "src": "/[^.]+", 
+      "dest": "/"
     },
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/$1"
     }
   ],
   "installCommand": "npm install && cd server && npm install && cd .."
