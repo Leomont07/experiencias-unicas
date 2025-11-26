@@ -135,7 +135,7 @@ export default function BookingList() {
                             <p>
                                 Total: ${b.total} | Cantidad: {b.cantidad}
                             </p>
-                            <Link to={`/booking/${b.id}`} className="btn btn-sm btn-outline-info">Ver Detalles</Link>
+                            <Link to={`/bookingDetail/${b.id}`} className="btn btn-sm btn-outline-info">Ver Detalles</Link>
                         </div>
                     </div>
                 ))}

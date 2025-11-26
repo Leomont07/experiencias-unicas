@@ -52,6 +52,15 @@ export default function AppRouter() {
           </ProtectedRoute>
         } 
       />
+      <Route 
+        path="/bookingDetail/:id" 
+        element={
+          <ProtectedRoute allowedTypes={TOURIST}>
+            <BookingDetail />
+          </ProtectedRoute>
+        } 
+      />
+
 
 
       {/* RUTAS PARA ANFITRIONES */}

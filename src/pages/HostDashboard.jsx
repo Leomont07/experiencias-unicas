@@ -3,6 +3,7 @@ import BookingCard from '../components/BookingCard'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { apiRequest } from '../api/api'
+import BookingDetail from './BookingDetail'
 
 export default function HostDashboard() {
   const { user } = useContext(AuthContext)

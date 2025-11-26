@@ -147,7 +147,7 @@ export const getBookingsByHostId = async (req, res) => {
       cantidad,
       comentarios,
       total,
-      fecha,
+      fechaInicio,
       service:service (
         nombre
       )
