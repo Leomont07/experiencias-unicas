@@ -7,13 +7,6 @@
       "config": {
         "includeFiles": ["server/**"]
       }
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "outputDirectory": "dist"
-      }
     }
   ],
   "routes": [
