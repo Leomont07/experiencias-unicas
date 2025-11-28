@@ -7,7 +7,14 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
-    if (stored) setUser(JSON.parse(stored))
+    if (stored && stored !== "undefined") {
+      try {
+        setUser(JSON.parse(stored))
+      } catch (e) {
+        console.error("Error al parsear 'user' de localStorage:", e)
+        localStorage.removeItem('user') 
+      }
+    }
   }, [])
 
   const login = ({ token, user }) => {

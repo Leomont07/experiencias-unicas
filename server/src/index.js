@@ -22,4 +22,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/service', serviceRoutes)
 app.use('/api/booking', bookingRoutes)
 
-export default app;
+const PORT = process.env.PORT || 3000 // Usa la variable de entorno o 3000 por defecto
+
+app.listen(PORT, () => {
+    // Es vital poner un console.log para saber cuándo está realmente activo.
+    console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`);
+});

@@ -14,6 +14,7 @@ import ProtectedRoute from './protectedRoute'
 import PoliticaPrivacidad from '../pages/PoliticaProvacidad'
 import TerminosCondiciones from '../pages/TerminosCondiciones'
 import BookingList from '../pages/BookingList'
+import VerifyAccount from '../pages/VerifyAccount'
 
 export default function AppRouter() {
   
@@ -30,6 +31,7 @@ export default function AppRouter() {
       <Route path="/" element={<ProtectedRoute allowedTypes={ANY}><Home /></ProtectedRoute>} />
       <Route path="/login" element={<ProtectedRoute allowedTypes={ANY}><Login /></ProtectedRoute>} />
       <Route path="/register" element={<ProtectedRoute allowedTypes={ANY}><Register /></ProtectedRoute>} />
+      <Route path="/verify/:token" element={<ProtectedRoute allowedTypes={ANY}><VerifyAccount /></ProtectedRoute>} />
       <Route path="/services" element={<ProtectedRoute allowedTypes={ANY}><ServicesList /></ProtectedRoute>} />
       <Route path="/services/:id" element={<ProtectedRoute allowedTypes={ANY}><ServiceDetail /></ProtectedRoute>} />
       <Route path="/politica-privacidad" element={<ProtectedRoute allowedTypes={ANY}><PoliticaPrivacidad /></ProtectedRoute>} />

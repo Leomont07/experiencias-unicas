@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext'
 
 export default function Register() {
   const navigate = useNavigate()
-  const { login } = useContext(AuthContext)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [formData, setFormData] = useState({ nombre: '', email: '', password: '', tipo: 'turista' })
   const [error, setError] = useState(null)
 
@@ -16,26 +16,25 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setSuccessMessage(null)
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData), // 'tipo' se incluye aquí automáticamente
+        body: JSON.stringify(formData),
       })
 
       const data = await res.json()
 
       if (!res.ok) throw new Error(data.message || 'Error al registrar')
 
-      login({ token: data.token, user: data.user })
+      setSuccessMessage(data.message || '¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta y poder iniciar sesión.')
 
-      if (data.user.tipo === 'anfitrion') {
-        navigate('/host')
-        return
-      }
+      setTimeout(() => {
+        navigate('/login') 
+      }, 5000);
 
-      navigate('/') 
     } catch (err) {
       setError(err.message)
     }
@@ -45,6 +44,15 @@ export default function Register() {
     <div className="row justify-content-center">
       <div className="col-md-6">
         <div className="card p-4">
+          {successMessage ? (
+            <div className="alert alert-success text-center" role="alert">
+                <h4 className="alert-heading">🎉 ¡Casi listo!</h4>
+                <p>{successMessage}</p>
+                <hr />
+                <p className="mb-0">Serás redirigido a Iniciar Sesión en un momento.</p>
+            </div>
+          ) : (
+            <>
           <h4>Registrarse</h4>
           <form onSubmit={handleSubmit}>
             <InputField label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
@@ -70,6 +78,8 @@ export default function Register() {
             </div>
           </form>
           {error && <p className="text-danger mt-2">{error}</p>}
+          </>
+          )}
         </div>
       </div>
     </div>
