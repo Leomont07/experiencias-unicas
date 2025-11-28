@@ -47,7 +47,7 @@ export const register = async (req, res) => {
 
     const verificationToken = generateVerificationToken(newUser.id)
 
-    const verificationLink = `${FRONTEND_URL}/verify/${verificationToken}`
+    const verificationLink = `${FRONTEND_URL}verify/${verificationToken}`
 
     await sendVerificationEmail(email, nombre, verificationLink)
 
