@@ -59,7 +59,7 @@ export default function VerifyAccount() {
               className="btn btn-primary mt-3" 
               onClick={() => navigate('/login')}
             >
-              Ir a Iniciar Sesion
+              Ir a Iniciar Sesión
             </button>
           )}
         </div>
