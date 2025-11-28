@@ -1,8 +1,10 @@
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { Navbar, Nav, Button, Container } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
-export default function Navbar() {
+export default function NavbarComponent() {
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -14,57 +16,51 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-      <div className="container">
-        {user && user.tipo === 'anfitrion' ? (
-          <Link className="navbar-brand" to="/host">Experiencias Únicas</Link>
-        ) : (
-          <Link className="navbar-brand" to="/">Experiencias Únicas</Link>
-        )}
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="nav">
-          <ul className="navbar-nav me-auto">
-            {user && user.tipo === 'turista' && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/services">Servicios</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/my-bookings">Mis Reservas</Link>
-                </li>
-              </>
-            )}
-            {/* Solo visible si es admin */}
-            {user?.tipo === 'admin' && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/admin">Panel Admin</Link>
-              </li>
-            )}
-          </ul>
+    <Navbar bg="white" expand="lg" className="shadow-sm">
+            <Container>
+                {/* Brand Link */}
+                <Navbar.Brand as={Link} to={user && user.tipo === 'anfitrion' ? "/host" : "/"}>
+                    Experiencias Únicas
+                </Navbar.Brand>
 
-          <ul className="navbar-nav ms-auto align-items-center">
-            {!user ? (
-              <>
-                <li className="nav-item me-2">
-                  <Link className="btn btn-outline-primary" to="/login">Iniciar sesión</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="btn btn-primary" to="/register">Registrarse</Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item me-2">
-                  <span className="me-3">Hola, {user.nombre}</span>
-                  <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>Cerrar sesión</button>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-      </div>
-    </nav>
+                {/* Botón Hamburger */}
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" /> 
+
+                {/* El Menú que colapsa */}
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    {/* Links Izquierdos (me-auto) */}
+                    <Nav className="me-auto">
+                        {user && user.tipo === 'turista' && (
+                            <>
+                                <Nav.Link as={Link} to="/services">Servicios</Nav.Link>
+                                <Nav.Link as={Link} to="/my-bookings">Mis Reservas</Nav.Link>
+                            </>
+                        )}
+                        {user?.tipo === 'admin' && (
+                            <Nav.Link as={Link} to="/admin">Panel Admin</Nav.Link>
+                        )}
+                    </Nav>
+
+                    {/* Links Derechos (ms-auto) */}
+                    <Nav className="ms-auto align-items-center">
+                        {!user ? (
+                            <>
+                                <Nav.Link as={Link} to="/login">
+                                    <Button variant="outline-primary" className="me-2">Iniciar sesión</Button>
+                                </Nav.Link>
+                                <Nav.Link as={Link} to="/register">
+                                    <Button variant="primary">Registrarse</Button>
+                                </Nav.Link>
+                            </>
+                        ) : (
+                            <>
+                                <span className="me-3">Hola, {user.nombre}</span>
+                                <Button variant="outline-danger" size="sm" onClick={handleLogout}>Cerrar sesión</Button>
+                            </>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
   )
 }
