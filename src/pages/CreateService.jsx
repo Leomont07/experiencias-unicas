@@ -9,6 +9,7 @@ export default function CreateService() {
   const { user } = useContext(AuthContext)
   const [form, setForm] = useState({
     nombre: '',
+    
     tipo: '',
     precio: 0,
     descripcion: ''
