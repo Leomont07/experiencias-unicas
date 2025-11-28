@@ -26,6 +26,6 @@ const PORT = process.env.PORT || 3000 // Usa la variable de entorno o 3000 por d
 
 export default app;
 
-//app.listen(PORT, () => {.
-    //console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`);
+//app.listen(PORT, () => {
+  //  console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`);
 //});
