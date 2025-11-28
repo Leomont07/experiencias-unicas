@@ -24,7 +24,8 @@ app.use('/api/booking', bookingRoutes)
 
 const PORT = process.env.PORT || 3000 // Usa la variable de entorno o 3000 por defecto
 
-app.listen(PORT, () => {
-    // Es vital poner un console.log para saber cuándo está realmente activo.
-    console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`);
-});
+export default app;
+
+//app.listen(PORT, () => {.
+    //console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`);
+//});
