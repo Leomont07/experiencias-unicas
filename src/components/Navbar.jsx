@@ -20,7 +20,15 @@ export default function NavbarComponent() {
             <Container>
                 {/* Brand Link */}
                 <Navbar.Brand as={Link} to={user && user.tipo === 'anfitrion' ? "/host" : "/"}>
-                    <img src="/EU.jpeg" alt="Experiencias Únicas" />
+                <img 
+                    src="/EU.jpeg" 
+                    alt="Logo de la Aplicación EU" 
+                    // 👇 Aquí aplicamos el estilo
+                    style={{ 
+                    height: '40px', // Altura deseada
+                    width: 'auto'  // Mantiene la proporción original
+                    }}
+                />
                 </Navbar.Brand>
 
                 {/* Botón Hamburger */}
