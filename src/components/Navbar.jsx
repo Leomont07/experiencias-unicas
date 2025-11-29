@@ -20,7 +20,7 @@ export default function NavbarComponent() {
             <Container>
                 {/* Brand Link */}
                 <Navbar.Brand as={Link} to={user && user.tipo === 'anfitrion' ? "/host" : "/"}>
-                    Experiencias Únicas
+                    <img src="/EU.jpeg" alt="Experiencias Únicas" />
                 </Navbar.Brand>
 
                 {/* Botón Hamburger */}
