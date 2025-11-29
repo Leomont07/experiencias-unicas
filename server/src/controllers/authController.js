@@ -6,7 +6,7 @@ import { sendVerificationEmail } from '../utils/sendEmail.js'
 
 const VERIFY_SECRET = process.env.JWT_SECRET || 'mi_clave_secreta_para_verificacion'
 const VERIFY_EXPIRY = '1h'
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://experiencias-unicas-pied.vercel.app'
+const FRONTEND_URL = 'https://experiencias-unicas-pied.vercel.app'
 
 const generateVerificationToken = (userId) => {
   return jwt.sign({ id: userId }, VERIFY_SECRET, { expiresIn: VERIFY_EXPIRY })
@@ -47,7 +47,7 @@ export const register = async (req, res) => {
 
     const verificationToken = generateVerificationToken(newUser.id)
 
-    const verificationLink = `${FRONTEND_URL}verify/${verificationToken}`
+    const verificationLink = `${FRONTEND_URL}/verify/${verificationToken}`
 
     await sendVerificationEmail(email, nombre, verificationLink)
 
