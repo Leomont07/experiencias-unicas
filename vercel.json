@@ -30,5 +30,11 @@
       "dest": "/$1"
     }
   ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "installCommand": "npm install && cd server && npm install && cd .."
 }
